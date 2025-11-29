@@ -1,0 +1,28 @@
+{
+  "name": "taro-anji-verify",
+  "version": "1.0.0",
+  "description": "Taro version of anji-plus-verify",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "taro",
+    "verify",
+    "captcha"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "@tarojs/components": "^3.0.0",
+    "@tarojs/taro": "^3.0.0",
+    "react": "^17.0.0 || ^18.0.0"
+  },
+  "dependencies": {
+    "crypto-js": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.2.2"
+  }
+}

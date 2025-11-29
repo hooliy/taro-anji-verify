@@ -1,0 +1,31 @@
+import Taro from '@tarojs/taro';
+import CryptoJS from 'crypto-js'
+
+export async function getPicture(params: any, baseUrl: string) {
+  const res = await Taro.request({
+    url: `${baseUrl}/captcha/get`,
+    method: 'POST',
+    data: params,
+  });
+  return res?.data?.content;
+}
+
+export async function reqCheck(params: any, baseUrl: string) {
+  const res = await Taro.request({
+    url: `${baseUrl}/captcha/check`,
+    method: 'POST',
+    data: params,
+  });
+  return res?.data?.content;
+}
+
+/**
+ * @word 要加密的内容
+ * @keyWord String  服务器随机返回的关键字
+ *  */
+export function aesEncrypt(word: string, keyWord = "XwKsGlMcdPMEhR1B") {
+  var key = CryptoJS.enc.Utf8.parse(keyWord);
+  var srcs = CryptoJS.enc.Utf8.parse(word);
+  var encrypted = CryptoJS.AES.encrypt(srcs, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 });
+  return encrypted.toString();
+}
