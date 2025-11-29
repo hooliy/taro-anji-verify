@@ -182,7 +182,7 @@ const VerifyPointFixed = (props: any) => {
                     />
                 }
                 {
-                  tempPoints.map((tempPoint, index) => {
+                  tempPoints.map((tempPoint: { x: number, y: number }, index: number) => {
                     return (
                       <View
                         key={index}

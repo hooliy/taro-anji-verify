@@ -1,12 +1,16 @@
 {
   "name": "taro-anji-verify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Taro version of anji-plus-verify",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && copyfiles -u 1 \"src/**/*.{jpg,scss}\" dist"
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "keywords": [
     "taro",
     "verify",
@@ -23,6 +27,9 @@
     "crypto-js": "^4.0.0"
   },
   "devDependencies": {
-    "@types/crypto-js": "^4.2.2"
+    "@types/crypto-js": "^4.2.2",
+    "@types/react": "^19.2.7",
+    "copyfiles": "^2.4.1",
+    "typescript": "^5.9.3"
   }
 }
