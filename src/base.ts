@@ -1,8 +1,8 @@
-import Taro from '@tarojs/taro';
+import { request } from '@tarojs/taro';
 import CryptoJS from 'crypto-js'
 
 export async function getPicture(params: any, baseUrl: string) {
-  const res = await Taro.request({
+  const res = await request({
     url: `${baseUrl}/captcha/get`,
     method: 'POST',
     data: params,
@@ -11,7 +11,7 @@ export async function getPicture(params: any, baseUrl: string) {
 }
 
 export async function reqCheck(params: any, baseUrl: string) {
-  const res = await Taro.request({
+  const res = await request({
     url: `${baseUrl}/captcha/check`,
     method: 'POST',
     data: params,

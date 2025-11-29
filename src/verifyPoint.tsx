@@ -1,4 +1,4 @@
-import Taro from '@tarojs/taro';
+import Taro, { getStorage, setStorage, createSelectorQuery } from '@tarojs/taro';
 import { useState, useEffect, useRef } from 'react';
 import { View, Text, Image } from '@tarojs/components';
 import { reqCheck, aesEncrypt, getPicture } from './base';
@@ -39,7 +39,7 @@ const VerifyPoints = (props: any) => {
   }, []);
 
   const getImgArea = () => {
-    const query = Taro.createSelectorQuery();
+    const query = createSelectorQuery();
     query.select('.verify-img-panel').boundingClientRect(rect => {
       if (rect && !Array.isArray(rect)) {
         imgAreaRef.current = { left: rect.left, top: rect.top };
@@ -47,7 +47,7 @@ const VerifyPoints = (props: any) => {
     }).exec();
   }
 
-  const initUuid = () => {
+  const initUuid = async () => {
     var s: string[] = [];
     var hexDigits = "0123456789abcdef";
     for (var i = 0; i < 36; i++) {
@@ -58,16 +58,28 @@ const VerifyPoints = (props: any) => {
     s[8] = s[13] = s[18] = s[23] = "-";
     var slider = 'slider' + '-' + s.join("");
     var point = 'point' + '-' + s.join("");
-    if (!Taro.getStorageSync('slider')) {
-      Taro.setStorageSync('slider', slider)
+    
+    try {
+      await getStorage({ key: 'slider' });
+    } catch (e) {
+      setStorage({ key: 'slider', data: slider });
     }
-    if (!Taro.getStorageSync('point')) {
-      Taro.setStorageSync("point", point);
+    
+    try {
+      await getStorage({ key: 'point' });
+    } catch (e) {
+      setStorage({ key: 'point', data: point });
     }
   }
 
-  const getData = () => {
-    getPicture({ captchaType: captchaType, clientUid: Taro.getStorageSync('point'), ts: Date.now() }, baseUrl).then(res => {
+  const getData = async () => {
+    let clientUid = '';
+    try {
+      const res = await getStorage({ key: 'point' });
+      clientUid = res.data;
+    } catch (e) {}
+
+    getPicture({ captchaType: captchaType, clientUid: clientUid, ts: Date.now() }, baseUrl).then(res => {
       if (res.repCode === '0000') {
         setPointBackImgBase(res.repData.originalImageBase64);
         setBackToken(res.repData.token);
@@ -103,7 +115,7 @@ const VerifyPoints = (props: any) => {
     return { x, y };
   }
 
-  const canvasClick = (e: any) => {
+  const canvasClick = async (e: any) => {
     if (bindingClick) {
       const pos = getMousePos(e);
       const newTempPoints = [...tempPoints, pos];
@@ -111,11 +123,17 @@ const VerifyPoints = (props: any) => {
 
       if (num === checkNum) {
         setBindingClick(false);
+        let clientUid = '';
+        try {
+          const res = await getStorage({ key: 'point' });
+          clientUid = res.data;
+        } catch (e) {}
+
         let data = {
           captchaType: captchaType,
           "pointJson": secretKey ? aesEncrypt(JSON.stringify(newTempPoints), secretKey) : JSON.stringify(newTempPoints),
           "token": backToken,
-          clientUid: Taro.getStorageSync('point'),
+          clientUid: clientUid,
           ts: Date.now()
         }
         reqCheck(data, baseUrl).then(res => {

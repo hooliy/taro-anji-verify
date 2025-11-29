@@ -1,4 +1,4 @@
-import Taro from '@tarojs/taro';
+import Taro, { getStorage, setStorage, createSelectorQuery } from '@tarojs/taro';
 import { useState, useEffect, useRef } from 'react';
 import { View, Text, Image } from '@tarojs/components';
 import { getPicture, reqCheck, aesEncrypt } from './base';
@@ -49,7 +49,7 @@ const VerifySlide = (props: any) => {
   }, []);
 
   const getBarArea = () => {
-    const query = Taro.createSelectorQuery();
+    const query = createSelectorQuery();
     query.select('.verify-bar-area').boundingClientRect(rect => {
       if (rect && !Array.isArray(rect)) {
         barAreaLeft.current = rect.left;
@@ -71,16 +71,16 @@ const VerifySlide = (props: any) => {
     var slider = 'slider' + '-' + s.join("");
     var point = 'point' + '-' + s.join("");
 
-    if (!Taro.getStorageSync('slider')) {
-      Taro.setStorageSync('slider', slider)
+    if (!getStorageSync('slider')) {
+      setStorageSync('slider', slider)
     }
-    if (!Taro.getStorageSync('point')) {
-      Taro.setStorageSync("point", point);
+    if (!getStorageSync('point')) {
+      setStorageSync("point", point);
     }
   }
 
   const getData = () => {
-    getPicture({ captchaType: captchaType, clientUid: Taro.getStorageSync('slider'), ts: Date.now() }, baseUrl).then(res => {
+    getPicture({ captchaType: captchaType, clientUid: getStorageSync('slider'), ts: Date.now() }, baseUrl).then(res => {
       if (res.repCode == '0000') {
         setBackImgBase(res.repData.originalImageBase64);
         setBlockBackImgBase(res.repData.jigsawImageBase64);
@@ -174,7 +174,7 @@ const VerifySlide = (props: any) => {
         captchaType: captchaType,
         "pointJson": secretKey ? aesEncrypt(JSON.stringify({ x: moveLeftDistance, y: 5.0 }), secretKey) : JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
         "token": backToken,
-        clientUid: Taro.getStorageSync('slider'),
+        clientUid: getStorageSync('slider'),
         ts: Date.now()
       }
 
