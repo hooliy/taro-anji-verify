@@ -58,7 +58,7 @@ const VerifySlide = (props: any) => {
     }).exec();
   }
 
-  const initUuid = () => {
+  const initUuid = async () => {
     var s: string[] = [];
     var hexDigits = "0123456789abcdef";
     for (var i = 0; i < 36; i++) {
@@ -71,16 +71,26 @@ const VerifySlide = (props: any) => {
     var slider = 'slider' + '-' + s.join("");
     var point = 'point' + '-' + s.join("");
 
-    if (!getStorageSync('slider')) {
-      setStorageSync('slider', slider)
+    try {
+      await getStorage({ key: 'slider' });
+    } catch (e) {
+      await setStorage({ key: 'slider', data: slider });
     }
-    if (!getStorageSync('point')) {
-      setStorageSync("point", point);
+
+    try {
+      await getStorage({ key: 'point' });
+    } catch (e) {
+      await setStorage({ key: 'point', data: point });
     }
   }
 
-  const getData = () => {
-    getPicture({ captchaType: captchaType, clientUid: getStorageSync('slider'), ts: Date.now() }, baseUrl).then(res => {
+  const getData = async () => {
+    let slider = '';
+    try {
+      const res = await getStorage({ key: 'slider' });
+      slider = res.data;
+    } catch (e) { }
+    getPicture({ captchaType: captchaType, clientUid: slider, ts: Date.now() }, baseUrl).then(res => {
       if (res.repCode == '0000') {
         setBackImgBase(res.repData.originalImageBase64);
         setBlockBackImgBase(res.repData.jigsawImageBase64);
@@ -163,18 +173,24 @@ const VerifySlide = (props: any) => {
     }
   }
 
-  const end = () => {
+  const end = async () => {
     const currentEndMovetime = +new Date();
 
     if (status && isEnd == false) {
       var moveLeftDistance = parseInt((moveBlockLeft || '0').replace('px', ''));
       moveLeftDistance = moveLeftDistance * 310 / parseInt(String(setSize.imgWidth))
 
+      let slider = '';
+      try {
+        const res = await getStorage({ key: 'slider' });
+        slider = res.data;
+      } catch (e) { }
+
       let data = {
         captchaType: captchaType,
         "pointJson": secretKey ? aesEncrypt(JSON.stringify({ x: moveLeftDistance, y: 5.0 }), secretKey) : JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
         "token": backToken,
-        clientUid: getStorageSync('slider'),
+        clientUid: slider,
         ts: Date.now()
       }
 
