@@ -1,6 +1,6 @@
 {
   "name": "taro-anji-verify",
-  "version": "1.0.3",
+  "version": "1.0.7",
   "description": "Taro version of anji-plus-verify",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
+    "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",
     "copyfiles": "^2.4.1",
     "typescript": "^5.9.3"
