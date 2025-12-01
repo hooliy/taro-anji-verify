@@ -5,15 +5,15 @@
   border: 1px solid #e4e7eb;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, .3);
-  /* ifdef rn */
+  /* #ifdef rn */
   elevation: 5;
-  /* endif */
+  /* #endif */
 
-  /* ifndef rn */
+  /* #ifndef rn */
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  /* endif */
+  /* #endif */
 
   &-top {
     padding: 0 15px;
@@ -90,9 +90,9 @@
 
 .tips-enter-active,
 .tips-leave-active {
-  /* ifndef rn */
+  /* #ifndef rn */
   transition: bottom .5s;
-  /* endif */
+  /* #endif */
 }
 
 /* ---------------------------- */
@@ -170,9 +170,9 @@
     background: #fff;
     /* box-sizing: content-box; */
     box-shadow: 0 0 2px #888888;
-    /* ifdef rn */
+    /* #ifdef rn */
     elevation: 2;
-    /* endif */
+    /* #endif */
     border-radius: 1px;
     display: flex;
     align-items: center;
