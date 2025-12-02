@@ -1,7 +1,7 @@
 import Taro, { getStorage, setStorage, createSelectorQuery } from '@tarojs/taro';
 import { useState, useEffect, useRef } from 'react';
 import { View, Text, Image } from '@tarojs/components';
-import { getPicture, reqCheck, aesEncrypt } from './base';
+import { aesEncrypt } from './base';
 import defaultImg from './default.jpg';
 import './index.scss';
 
@@ -16,7 +16,8 @@ const VerifySlideFixed = (props: any) => {
     finishText,
     transitionLeft,
     verifyPointFixedChild,
-    baseUrl
+    getCaptcha,
+    checkCaptcha
   } = props;
 
   const [blockSize] = useState({ width: '50px', height: '50px' });
@@ -95,7 +96,7 @@ const VerifySlideFixed = (props: any) => {
       const res = await getStorage({ key: 'slider' });
       slider = res.data;
     } catch (e) { }
-    getPicture({ captchaType: captchaType, clientUid: slider, ts: Date.now() }, baseUrl).then(res => {
+    getCaptcha({ captchaType: captchaType, clientUid: slider, ts: Date.now() }).then((res: any) => {
       if (res.repCode == '0000') {
         setBackImgBase(res.repData.originalImageBase64);
         setBlockBackImgBase(res.repData.jigsawImageBase64);
@@ -201,7 +202,15 @@ const VerifySlideFixed = (props: any) => {
         ts: Date.now()
       }
 
-      reqCheck(data, baseUrl).then(res => {
+      let captchaVerification = secretKey
+        ? aesEncrypt(
+          backToken + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
+          secretKey,
+        )
+        : backToken + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 });
+
+
+      checkCaptcha(data).then((res: any) => {
         if (res.repCode == "0000") {
           setIsEnd(true);
           setPassFlag(true);
@@ -210,7 +219,7 @@ const VerifySlideFixed = (props: any) => {
           setTimeout(() => {
             setTipWords("");
             refresh();
-            verifyPointFixedChild && verifyPointFixedChild(true);
+            verifyPointFixedChild && verifyPointFixedChild(true, captchaVerification);
           }, 1000)
         } else {
           setIsEnd(true);
@@ -231,7 +240,7 @@ const VerifySlideFixed = (props: any) => {
   }
 
   const closeBox = () => {
-    verifyPointFixedChild(false)
+    verifyPointFixedChild(false, null);
   }
 
   return (
