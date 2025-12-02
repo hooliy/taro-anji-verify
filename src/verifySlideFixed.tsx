@@ -218,8 +218,7 @@ const VerifySlideFixed = (props: any) => {
 
           setTimeout(() => {
             setTipWords("");
-            refresh();
-            verifyPointFixedChild && verifyPointFixedChild(true, captchaVerification);
+            verifyPointFixedChild && verifyPointFixedChild(false, captchaVerification);
           }, 1000)
         } else {
           setIsEnd(true);
@@ -249,7 +248,7 @@ const VerifySlideFixed = (props: any) => {
         <View className='verifybox-top'>
           请完成安全验证
           <View className='verifybox-close' onClick={() => closeBox()}>
-            <Text className='iconfont icon-close'></Text>
+            <Text style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>x</Text>
           </View>
         </View>
         <View className='verifybox-bottom' style={{ padding: '15px' }}>
